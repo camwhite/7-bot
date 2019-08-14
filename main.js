@@ -1,4 +1,5 @@
 import bot from './bot'
-import term from './term'
+import term, { stream } from './term'
 
 bot.on('data', term)
+stream.pipe(bot)
