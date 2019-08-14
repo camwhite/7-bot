@@ -26,7 +26,7 @@ terminal.on('key', (key, matches, { isCharacter }) => {
   if (isCharacter) {
     textBuffer.insert(key)
   }
-  // maybe convert to switch
+  // @TODO maybe convert to switch
   if (key === 'ENTER') {
     textBuffer.backDelete(result.length)
     readable.push(result)
@@ -44,16 +44,23 @@ terminal.on('key', (key, matches, { isCharacter }) => {
 // streaming input
 export const stream = readable
 
-// synchronous message handler
-export default function(data) {
+// data handler
+export default async function(data) {
   terminal.restoreCursor()
   if (previous && previous.username === data.username) {
     terminal.bold('\n' + data.message)
   } else {
+    const [date, timestamp] = new Date()
+      .toLocaleString()
+      .split(' ')
     terminal
-      .dim('\n' + new Date().toLocaleString())
       .inverse('\n' + data.username)
+      .dim(' @ ' + timestamp)
       .bold('\n' + data.message)
+  }
+  const { x, y } = await terminal.getCursorLocation()
+  if (y === terminal.height) {
+    terminal.scrollUp().moveTo(x, y - 1)
   }
   terminal.saveCursor()
   previous = data
