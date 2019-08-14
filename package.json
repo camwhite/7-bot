@@ -1,0 +1,22 @@
+{
+  "name": "dog-bot",
+  "version": "0.0.1",
+  "main": "index.js",
+  "module": "main.js",
+  "license": "MIT",
+  "description": "terminal twitch bot",
+  "scripts": {
+    "start": "node index"
+  },
+  "keywords": [
+    "bot",
+    "twitch"
+  ],
+  "author": "camwhite",
+  "dependencies": {
+    "esm": "^3.2.25",
+    "node-notifier": "^5.4.1",
+    "terminal-kit": "^1.31.0",
+    "twitch-js": "^2.0.0-beta.30"
+  }
+}
