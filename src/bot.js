@@ -5,16 +5,15 @@ import notifier from 'node-notifier'
 import { token, username, channels } from '../options'
 
 class Bot extends Duplex {
-  constructor() {
-    super({ objectMode: true })
-    chat.on('PRIVMSG', ({ username, message }) => {
-      this.push({ username, message }, this.encoding)
-      const notification = {
-        title: username,
+  constructor(opts = {}) {
+    super(opts)
+    chat.on(PRIVATE_MESSAGE, data => {
+      this.notification = {
+        title: data.username,
         icon: resolve('icon.png'),
-        message
+        message: data.message
       }
-      notifier.notify(notification)
+      this.push(data, this.encoding)
     })
   }
   _write(chunk, encoding, callback) {
@@ -23,14 +22,23 @@ class Bot extends Duplex {
     }
     channels.forEach(async channel => {
       const { username } = await chat.say(channel, chunk)
+      this.notification = null
       this.push({ username, message: chunk }, this.encoding)
     })
     callback()
   }
-  _read() {}
+  _read() {
+    if (!this.notification) return
+    notifier.notify(this.notification)
+  }
 }
 
-const { chat } = new Twitch({
+const {
+  chat,
+  chatConstants: {
+    EVENTS: { PRIVATE_MESSAGE }
+  }
+} = new Twitch({
   token,
   username,
   log: { level: 0 }
@@ -40,4 +48,4 @@ const { chat } = new Twitch({
   channels.forEach(channel => chat.join(channel))
 })()
 
-export default new Bot()
+export default new Bot({ objectMode: true })
