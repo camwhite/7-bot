@@ -1,8 +1,8 @@
-import { join } from 'path'
+import { resolve } from 'path'
 import { Duplex } from 'stream'
 import Twitch from 'twitch-js'
 import notifier from 'node-notifier'
-import { token, username, channels } from './options'
+import { token, username, channels } from '../options'
 
 class Bot extends Duplex {
   constructor() {
@@ -11,7 +11,7 @@ class Bot extends Duplex {
       this.push({ username, message }, this.encoding)
       const notification = {
         title: username,
-        icon: join(__dirname, 'icon.png'),
+        icon: resolve('icon.png'),
         message
       }
       notifier.notify(notification)

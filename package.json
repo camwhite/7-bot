@@ -1,17 +1,14 @@
 {
-  "name": "dog-bot",
+  "name": "7-bot",
   "version": "0.0.1",
   "main": "index.js",
   "module": "main.js",
   "license": "MIT",
   "description": "terminal twitch bot",
   "scripts": {
-    "start": "node index"
+    "start": "node src/index"
   },
-  "keywords": [
-    "bot",
-    "twitch"
-  ],
+  "keywords": ["bot", "twitch"],
   "author": "camwhite",
   "dependencies": {
     "esm": "^3.2.25",
