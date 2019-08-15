@@ -4,7 +4,7 @@ import { terminal, ScreenBuffer, TextBuffer } from 'terminal-kit'
 let previous
 
 const readable = new Readable({
-  read() {}
+  read() {} // noop
 })
 const screenBuffer = new ScreenBuffer({
   dst: terminal,
@@ -14,7 +14,8 @@ const screenBuffer = new ScreenBuffer({
   y: terminal.height
 })
 const textBuffer = new TextBuffer({
-  dst: screenBuffer
+  dst: screenBuffer,
+  wrap: true
 })
 
 terminal.fullscreen()
@@ -22,18 +23,28 @@ terminal.saveCursor()
 terminal.grabInput()
 
 terminal.on('key', (key, matches, { isCharacter }) => {
-  const result = textBuffer.getText()
   if (isCharacter) {
     textBuffer.insert(key)
   }
-  // @TODO maybe convert to switch
-  if (key === 'ENTER') {
-    textBuffer.backDelete(result.length)
-    readable.push(result)
-  } else if (key === 'BACKSPACE') {
-    textBuffer.backDelete()
-  } else if (key === 'CTRL_C') {
-    process.exit()
+  const result = textBuffer.getText()
+  switch (key) {
+    case 'ENTER':
+      textBuffer.moveToEndOfLine()
+      textBuffer.backDelete(result.length)
+      readable.push(result)
+      break
+    case 'CTRL_C':
+      process.exit()
+      break
+    case 'BACKSPACE':
+      textBuffer.backDelete()
+      break
+    case 'LEFT':
+      textBuffer.moveLeft()
+      break
+    case 'RIGHT':
+      textBuffer.moveRight()
+      break
   }
   textBuffer.draw()
   screenBuffer.draw()
