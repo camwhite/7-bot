@@ -4,6 +4,17 @@ import Twitch from 'twitch-js'
 import notifier from 'node-notifier'
 import { token, username, channels } from '../options'
 
+const {
+  chat,
+  chatConstants: {
+    EVENTS: { PRIVATE_MESSAGE }
+  }
+} = new Twitch({
+  token,
+  username,
+  log: { level: 0 }
+})
+
 class Bot extends Duplex {
   constructor(opts = {}) {
     super(opts)
@@ -20,10 +31,12 @@ class Bot extends Duplex {
     if (Buffer.isBuffer(chunk)) {
       chunk = chunk.toString(encoding)
     }
-    channels.forEach(async channel => {
+    channels.forEach(async (channel, index) => {
       const { username } = await chat.say(channel, chunk)
       this.notification = null
-      this.push({ username, message: chunk }, this.encoding)
+      if (index < 1) {
+        this.push({ username, message: chunk }, this.encoding)
+      }
     })
     callback()
   }
@@ -32,17 +45,6 @@ class Bot extends Duplex {
     notifier.notify(this.notification)
   }
 }
-
-const {
-  chat,
-  chatConstants: {
-    EVENTS: { PRIVATE_MESSAGE }
-  }
-} = new Twitch({
-  token,
-  username,
-  log: { level: 0 }
-})
 ;(async () => {
   await chat.connect()
   channels.forEach(channel => chat.join(channel))
