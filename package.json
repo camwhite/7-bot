@@ -12,7 +12,7 @@
   "author": "camwhite",
   "dependencies": {
     "esm": "^3.2.25",
-    "node-notifier": "^5.4.1",
+    "node-notifier": "^8.0.1",
     "terminal-kit": "^1.31.0",
     "twitch-js": "^2.0.0-beta.30"
   }
