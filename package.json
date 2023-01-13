@@ -13,7 +13,7 @@
   "dependencies": {
     "esm": "^3.2.25",
     "node-notifier": "^5.4.1",
-    "terminal-kit": "^1.31.0",
+    "terminal-kit": "^2.1.8",
     "twitch-js": "^2.0.0-beta.30"
   }
 }
